@@ -1,12 +1,13 @@
 from datetime import *
 from rich.console import Console
 from rich.table import Table
+import questionary
 console=Console()
 expenses = []
 
 def show_expenses(expenses, total):
     if len(expenses) == 0:
-        console.print("No expense has been added yet.")
+        console.print("No expense has been added yet.",style="red")
     else:
         table = Table()
         table.add_column("date")
@@ -30,16 +31,23 @@ def add_expense(expenses,title,category,cost):
      expens={"date":today,"title":title,"category":category,"cost":cost}
      expenses.append(expens)
 def ask_for_expense(expenses):
-    title=input("enter title: ")
-    cost=float((input("enter cost: ")))
-    category=input("enter category:")
+    title=questionary.text("enter title: ").ask()
+    cost=float(questionary.text("enter cost: ").ask())
+    category=questionary.select(
+    "Which category does it belong to??",
+    choices=[
+        "food",
+        "travel",
+        "school",
+        "entertainment",
+        "other"]).ask()
     add_expense(expenses,title,category,cost)
 def main():
      show_expenses(expenses,calculate_total(expenses))
      add_expense=False
      while not add_expense:
-        user_choice=int(input("enter 1 if you want enter an expens enter 2 if you dont want: "))
-        if user_choice==1:
+        user_choice=questionary.select("do you want add an expens",choices=["yes","no"]).ask()
+        if user_choice=="yes":
             ask_for_expense(expenses)
             show_expenses(expenses,calculate_total(expenses))
         else:
