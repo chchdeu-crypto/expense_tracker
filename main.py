@@ -1,15 +1,22 @@
 from datetime import *
+from rich.console import Console
+from rich.table import Table
+console=Console()
 expenses = []
 
-def show_expenses(expenses,total):
-    if len(expenses)==0:
-         print("Expense does not exist")
+def show_expenses(expenses, total):
+    if len(expenses) == 0:
+        console.print("No expense has been added yet.")
     else:
+        table = Table()
+        table.add_column("date")
+        table.add_column("title")
+        table.add_column("category")
+        table.add_column("cost")
         for expens in expenses:
-            for value in expens.values():
-                print(value, end=" | ")
-            print()
-    print(f"Total: {total} ILS")
+            table.add_row(str(expens["date"]),expens["title"],expens["category"],f'{expens["cost"]:.2f}')
+        console.print(table)
+    console.print(f"Total: {total:.2f} ILS",style="bold green")
 def calculate_total(expenses):
     total=0
     if len(expenses)==0:
